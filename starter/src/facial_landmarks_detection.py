@@ -31,7 +31,8 @@ class Model_X:
         This method is for loading the model to the device specified by the user.
         If your model requires any Plugins, this is where you can load them.
         '''
-        raise NotImplementedError
+        self.exec_network = self.core.load_network(self.network, self.device)
+        return self.exec_network
 
     def predict(self, image):
         '''
