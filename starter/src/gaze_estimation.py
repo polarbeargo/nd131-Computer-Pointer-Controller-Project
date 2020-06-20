@@ -42,8 +42,13 @@ class Model_X:
         raise NotImplementedError
 
     def check_model(self):
-        raise NotImplementedError
-
+        supported_layers = self.core.query_network(network=self.network, device_name=self.device)
+        unsupported_layers = [layer for layer in self.network.layers.keys() if layer not in supported_layers]
+        if len(unsupported_layers) > 0:
+            print("Check extention of these unsupported layers =>" + str(unsupported_layers))
+            exit(1)
+        print("All layers are supported")
+        
     def preprocess_input(self, image):
     '''
     Before feeding the data into the model for inference,
