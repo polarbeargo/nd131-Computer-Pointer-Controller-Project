@@ -3,7 +3,7 @@ This is a sample class for a model. You may choose to use it as-is or make any c
 This has been provided just to give you an idea of how to structure your model class.
 '''
 
-class Model_X:
+class Model_Gaze:
     '''
     Class for the Face Detection Model.
     '''
@@ -48,7 +48,7 @@ class Model_X:
             print("Check extention of these unsupported layers =>" + str(unsupported_layers))
             exit(1)
         print("All layers are supported")
-        
+
     def preprocess_input(self, image):
     '''
     Before feeding the data into the model for inference,
