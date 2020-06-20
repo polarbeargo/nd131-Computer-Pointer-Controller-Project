@@ -49,7 +49,11 @@ class Model_X:
     Before feeding the data into the model for inference,
     you might have to preprocess it. This function is where you can do that.
     '''
-        raise NotImplementedError
+        net_input_shape = self.network.inputs[self.input].shape
+        p_frame = cv2.resize(image, (net_input_shape[3], net_input_shape[2]))
+        p_frame = p_frame.transpose(2, 0, 1)
+        p_frame = p_frame.reshape(1, *p_frame.shape)
+        return p_frame
 
     def preprocess_output(self, outputs):
     '''
