@@ -11,7 +11,19 @@ class Model_X:
         '''
         TODO: Use this to set your instance variables.
         '''
-        raise NotImplementedError
+        self.core = None
+        self.network = None
+        self.input = None
+        self.output = None
+        self.exec_network = None
+        self.device = device
+
+        self.core = IECore()
+        self.network = self.core.read_network(model=str(model_name),
+                                              weights=str(os.path.splitext(model_name)[0] + ".bin"))
+
+        self.input = next(iter(self.network.inputs))
+        self.output = next(iter(self.network.outputs))
 
     def load_model(self):
         '''
