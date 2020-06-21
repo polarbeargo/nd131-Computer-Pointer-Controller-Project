@@ -19,7 +19,6 @@ def imshow(windowname, frame, width=None):
     frame = imutils.resize(frame, width=width)
     cv2.imshow(windowname, frame)
 
-
 def build_argparser():
     parser = ArgumentParser()
     parser.add_argument("-f", "--face", required=True, type=str,
@@ -46,7 +45,7 @@ def build_argparser():
 
     return parser
 
-    def main(arg):
+    def main(args):
 
         feeder = None
 
