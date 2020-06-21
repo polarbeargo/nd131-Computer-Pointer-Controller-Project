@@ -12,12 +12,14 @@ import cv2
 import imutils
 import math
 
+
 def imshow(windowname, frame, width=None):
     if width == None:
         width = 400
 
     frame = imutils.resize(frame, width=width)
     cv2.imshow(windowname, frame)
+
 
 def build_argparser():
     parser = ArgumentParser()
@@ -48,7 +50,53 @@ def build_argparser():
     def main(args):
 
         feeder = None
+        if args.input_type == constants.VIDEO or args.input_type == constants.IMAGE:
+            extension = str(args.input).split('.')[1]
+        if not extension.lower() in constants.ALLOWED_EXTENSIONS:
+            print('Please provide supported extension.' +
+                         str(constants.ALLOWED_EXTENSIONS))
+            exit(1)
 
+        if not os.path.isfile(args.input):
+            print("Unable to find specified video/image file")
+            exit(1)
+
+            feeder = InputFeeder(args.input_type, args.input)
+        elif args.input_type == constants.IP_CAMERA:
+            if not str(args.input).startswith('http://'):
+                print('Please provide ip of server with http://')
+                exit(1)
+
+            feeder = InputFeeder(args.input_type, args.input)
+        elif args.input_type == constants.WEBCAM:
+            feeder = InputFeeder(args.input_type)
+
+        mc = MouseController("medium", "fast")
+
+        feeder.load_data()
+
+        face_model = Face_Model(args.face, args.device, args.cpu_extension)
+        face_model.check_model()
+
+        landmark_model = Model_Landmark(args.landmarks, args.device, args.cpu_extension)
+        landmark_model.check_model()
+
+        gaze_model = Model_Gaze(args.gazeestimation, args.device, args.cpu_extension)
+        gaze_model.check_model()
+
+        head_model = Model_Pose(
+        args.headpose, args.device, args.cpu_extension)
+        head_model.check_model()
+
+        face_model.load_model()
+        print("Face Detection Model Loaded...")
+        landmark_model.load_model()
+        print("Landmark Detection Model Loaded...")
+        gaze_model.load_model()
+        print("Gaze Estimation Model Loaded...")
+        head_model.load_model()
+        print("Head Pose Detection Model Loaded...")
+        print('Loaded')
         try:
 
         except Exception as err:
