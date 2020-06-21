@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-import logging
 from input_feeder import InputFeeder
 import constants
 import os
@@ -97,7 +96,7 @@ def build_argparser():
         head_model.load_model()
         print("Head Pose Detection Model Loaded...")
         print('Loaded')
-        
+
         try:
             frame_count = 0
         for ret, frame in feeder.next_batch():
