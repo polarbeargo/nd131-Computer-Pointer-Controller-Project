@@ -97,10 +97,124 @@ def build_argparser():
         head_model.load_model()
         print("Head Pose Detection Model Loaded...")
         print('Loaded')
+        
         try:
+            frame_count = 0
+        for ret, frame in feeder.next_batch():
+            if not ret:
+                break
 
-        except Exception as err:
-        logger.error(err)
+            if frame is None:
+                continue
+
+            frame_count += 1
+            crop_face = None
+            if frame_count % 3 ==0:
+
+                crop_face, box = face_model.predict(frame.copy())
+
+                if crop_face is None:
+                    logger.error("Unable to detect the face.")
+                    continue
+
+                (lefteye_x, lefteye_y), (
+                    righteye_x, righteye_y), eye_coords, left_eye, right_eye = landmark_model.predict(
+                    crop_face.copy(), eye_surrounding_area=15)
+                
+                '''TODO dlib is better to crop eye with perfection'''
+
+                head_position = head_model.predict(crop_face.copy())
+
+                gaze, (mousex, mousey) = gaze_model.predict(left_eye.copy(), right_eye.copy(), head_position)
+               
+                if (len(args.debug) > 0):
+                    debuFrame = frame.copy()
+                    if crop_face is None:
+                        continue
+
+                    thickness = 2
+                    radius = 2
+                    color = (0, 0, 255)
+                    [[le_xmin, le_ymin, le_xmax, le_ymax], [re_xmin, re_ymin, re_xmax, re_ymax]] = eye_coords
+
+                    '''
+                    LandMark
+                    '''
+
+                    cv2.circle(crop_face, (lefteye_x, lefteye_y), radius, color, thickness)
+                    cv2.circle(crop_face, (righteye_x, righteye_y), radius, color, thickness)
+
+                    if 'headpose' in args.debug:
+                        yaw = head_position[0]
+                        pitch = head_position[1]
+                        roll = head_position[2]
+
+                        sinY = math.sin(yaw * math.pi / 180.0)
+                        sinP = math.sin(pitch * math.pi / 180.0)
+                        sinR = math.sin(roll * math.pi / 180.0)
+
+                        cosY = math.cos(yaw * math.pi / 180.0)
+                        cosP = math.cos(pitch * math.pi / 180.0)
+                        cosR = math.cos(roll * math.pi / 180.0)
+
+                        cH, cW = crop_face.shape[:2]
+                        arrowLength = 0.4 * cH * cW
+
+                        xCenter = int(cW / 2)
+                        yCenter = int(cH / 2)
+
+                        # center to right
+                        cv2.line(crop_face, (xCenter, yCenter),
+                                 (int((xCenter + arrowLength * (cosR * cosY + sinY * sinP * sinR))),
+                                  int((yCenter + arrowLength * cosP * sinR))), (186, 204, 2), 1)
+
+                        # center to top
+                        cv2.line(crop_face, (xCenter, yCenter),
+                                 (int(((xCenter + arrowLength * (cosR * sinY * sinP + cosY * sinR)))),
+                                  int((yCenter - arrowLength * cosP * cosR))), (186, 204, 2), 1)
+
+                        # center to forward
+                        cv2.line(crop_face, (xCenter, yCenter),
+                                 (int(((xCenter + arrowLength * sinY * cosP))),
+                                  int((yCenter + arrowLength * sinP))), (186, 204, 2), 1)
+
+                        cv2.putText(crop_face, 'head pose: (y={:.2f}, p={:.2f}, r={:.2f})'.format(yaw, pitch, roll),
+                                    (0, 20), cv2.FONT_HERSHEY_SIMPLEX,
+                                    0.35, (255, 255, 255), 1)
+
+                    if 'gaze' in args.debug:
+                        cH, cW = crop_face.shape[:2]
+                        arrowLength = 0.4 * cH * cW
+
+                        gazeArrowX = gaze[0] * arrowLength
+                        gazeArrowY = -gaze[1] * arrowLength
+
+                        cv2.rectangle(crop_face, (re_xmin, re_ymin), (re_xmax, re_ymax), (255, 255, 255))
+                        cv2.rectangle(crop_face, (le_xmin, le_ymin), (le_xmax, le_ymax), (255, 255, 255))
+
+                        cv2.arrowedLine(crop_face, (lefteye_x, lefteye_y),
+                                        (int(lefteye_x + gazeArrowX), int(lefteye_y + gazeArrowY)), (184, 113, 57), 2)
+                        cv2.arrowedLine(crop_face, (righteye_x, righteye_y),
+                                        (int(righteye_x + gazeArrowX), int(righteye_y + gazeArrowY)), (184, 113, 57), 2)
+
+                        cv2.putText(crop_face, 'gaze angles: h={}, v={}'.format("!", "2"), (0, 10),
+                                    cv2.FONT_HERSHEY_SIMPLEX,
+                                    0.35, (255, 255, 255), 1)
+
+                        imshow("face", crop_face, width=400)
+                        cv2.moveWindow("face", 0, 0)
+                        imshow("debug", debuFrame, width=400)
+                        cv2.moveWindow("debug", cW * 2, cH)
+
+                try:
+                    mc.move(gaze[0], gaze[1])
+                except Exception as err:
+                    print("Moving cursor outside the PC not supported yet !!")
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+    except Exception as err:
+        print(err)
 
     cv2.destroyAllWindows()
     feeder.close()
