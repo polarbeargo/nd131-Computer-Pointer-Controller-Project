@@ -26,7 +26,7 @@ which includes the following:
 
 5. Load the OpenVino Variables from installed directory of OpenVino
 
-        source {INSTALLED_OPENVINO_DIR}/bin/setupvars.sh 
+        source /opt/intel/openvino/bin/setupvars.sh -pyver 3.5 
             
 6. Just execute <i>runme.sh</i> from working directory to install prerequisites and you are good to go !!
 
