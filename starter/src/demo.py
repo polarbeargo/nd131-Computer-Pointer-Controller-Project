@@ -1,6 +1,5 @@
 from argparse import ArgumentParser
 from input_feeder import InputFeeder
-import constants
 import os
 from face_detection import Face_Model
 from facial_landmarks_detection import Model_Landmark
