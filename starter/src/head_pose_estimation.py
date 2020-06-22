@@ -50,10 +50,10 @@ class Model_Pose:
         print("All layers are supported")
 
     def preprocess_input(self, image):
-    '''
-    Before feeding the data into the model for inference,
-    you might have to preprocess it. This function is where you can do that.
-    '''
+        '''
+        Before feeding the data into the model for inference,
+        you might have to preprocess it. This function is where you can do that.
+        '''
         net_input_shape = self.network.inputs[self.input].shape
         p_frame = cv2.resize(image, (net_input_shape[3], net_input_shape[2]))
         p_frame = p_frame.transpose(2, 0, 1)
@@ -61,8 +61,8 @@ class Model_Pose:
         return p_frame
 
     def preprocess_output(self, outputs):
-    '''
-    Before feeding the output of this model to the next model,
-    you might have to preprocess the output. This function is where you can do that.
-    '''
+        '''
+        Before feeding the output of this model to the next model,
+        you might have to preprocess the output. This function is where you can do that.
+        '''
         raise NotImplementedError
