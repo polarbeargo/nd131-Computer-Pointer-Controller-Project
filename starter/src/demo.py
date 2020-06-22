@@ -55,11 +55,11 @@ def build_argparser():
     def main(args):
 
         feeder = None
-        if args.input_type == constants.VIDEO or args.input_type == constants.IMAGE:
+        if args.input_type == VIDEO or args.input_type == IMAGE:
             extension = str(args.input).split('.')[1]
-        if not extension.lower() in constants.ALLOWED_EXTENSIONS:
+        if not extension.lower() in ALLOWED_EXTENSIONS:
             print('Please provide supported extension.' +
-                         str(constants.ALLOWED_EXTENSIONS))
+                         str(ALLOWED_EXTENSIONS))
             exit(1)
 
         if not os.path.isfile(args.input):
@@ -67,13 +67,13 @@ def build_argparser():
             exit(1)
 
             feeder = InputFeeder(args.input_type, args.input)
-        elif args.input_type == constants.IP_CAMERA:
+        elif args.input_type == IP_CAMERA:
             if not str(args.input).startswith('http://'):
                 print('Please provide ip of server with http://')
                 exit(1)
 
             feeder = InputFeeder(args.input_type, args.input)
-        elif args.input_type == constants.WEBCAM:
+        elif args.input_type == WEBCAM:
             feeder = InputFeeder(args.input_type)
 
         mc = MouseController("medium", "fast")
