@@ -21,7 +21,6 @@ Django==2.2.13
 idna==2.8
 image==1.5.27
 ipdb==0.12.3
-ipython==7.9.0
 ipython-genutils==0.2.0
 jedi==0.17.0
 MouseInfo==0.1.3
