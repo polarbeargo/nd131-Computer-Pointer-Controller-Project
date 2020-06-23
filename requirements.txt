@@ -31,7 +31,7 @@ pickleshare==0.7.5
 Pillow==7.1.2
 prompt-toolkit==2.0.10
 ptyprocess==0.6.0
-PyAutoGUI==0.9.50
+PyAutoGUI==0.9.46
 PyGetWindow==0.0.8
 Pygments==2.6.1
 PyMsgBox==1.0.8
