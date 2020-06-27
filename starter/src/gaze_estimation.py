@@ -44,7 +44,18 @@ class Model_Gaze:
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        raise NotImplementedError
+        t1 = time.time()
+        net_input = self.preprocess_input(image)
+
+        t2 = time.time()
+        infer_request_handle = self.network.start_async(request_id=0, inputs=net_input)
+        infer_request_handle.wait()
+        self.inference_times.append(time.time() - t2)
+
+        net_output = infer_request_handle.outputs
+        output = self.preprocess_output(net_output, image)
+        self.processing_times.append(time.time() - t1)
+        return output
 
     def check_model(self):
         supported_layers = self.core.query_network(network=self.network, device_name=self.device)
