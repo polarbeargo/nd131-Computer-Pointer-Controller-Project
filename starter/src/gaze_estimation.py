@@ -3,6 +3,11 @@ This is a sample class for a model. You may choose to use it as-is or make any c
 This has been provided just to give you an idea of how to structure your model class.
 '''
 
+import os
+import cv2
+import math
+from openvino.inference_engine import IENetwork, IECore
+
 class Model_Gaze:
     '''
     Class for the Face Detection Model.
