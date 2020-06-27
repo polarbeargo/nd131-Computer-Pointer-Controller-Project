@@ -79,7 +79,7 @@ def build_argparser():
 
         feeder.load_data()
 
-        face_model = Face_Model(args.face, args.device, args.cpu_extension)
+        face_model = Model_Face(args.face, args.device, args.cpu_extension)
         face_model.check_model()
 
         landmark_model = Model_Landmark(args.landmarks, args.device, args.cpu_extension)
