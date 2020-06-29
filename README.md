@@ -14,22 +14,10 @@ which includes the following:
 1. Download [OpenVino ToolKit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html) and install it locally.
 
 2. Clone the repository from this URL: https://github.com/Polarbeargo/Computer-Pointer-Controller-Project.git
+           
+3. Execute <i>run.sh</i> from working directory to install prerequisites.
 
-3. Create Virtual Enviorment in working directory.
-
-        cd Computer-Pointer-Controller
-        python3 -m venv venv
-
-4. Activate Virtual Enviorment
-        
-        source venv/bin/activate
-
-5. Load the OpenVino Variables from installed directory of OpenVino
-
-        source /opt/intel/openvino/bin/setupvars.sh -pyver 3.5 
-            
-6. Just execute <i>runme.sh</i> from working directory to install prerequisites and you are good to go !!
-
+         cd Computer-Pointer-Controller
         ./run.sh
 
 ## Demo
