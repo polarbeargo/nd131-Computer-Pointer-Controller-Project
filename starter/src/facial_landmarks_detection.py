@@ -4,6 +4,7 @@ This has been provided just to give you an idea of how to structure your model c
 '''
 import os
 import cv2
+import time
 import numpy as np
 from openvino.inference_engine import IENetwork, IECore
 
@@ -28,6 +29,8 @@ class Model_Landmark:
 
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
+        self.inference_times = []
+        self.processing_times = []
 
     def load_model(self):
         '''
@@ -43,7 +46,7 @@ class Model_Landmark:
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-         t1 = time.time()
+        t1 = time.time()
         net_input = self.preprocess_input(image)
 
         t2 = time.time()
@@ -52,7 +55,7 @@ class Model_Landmark:
         self.inference_times.append(time.time() - t2)
 
         net_output = infer_request_handle.outputs
-        output = self.preprocess_output(net_output, image)
+        output = self.preprocess_output(net_output)
         self.processing_times.append(time.time() - t1)
         return output
 
@@ -80,4 +83,8 @@ class Model_Landmark:
         Before feeding the output of this model to the next model,
         you might have to preprocess the output. This function is where you can do that.
         '''
-        raise NotImplementedError
+        left_eye_x = outputs[0][0].tolist()[0][0]
+        left_eye_y = outputs[0][1].tolist()[0][0]
+        right_eye_x = outputs[0][2].tolist()[0][0]
+        rght_eye_y = outputs[0][3].tolist()[0][0]
+        return (left_eye_x, left_eye_y, right_eye_x, rght_eye_y)
