@@ -5,6 +5,7 @@ This has been provided just to give you an idea of how to structure your model c
 
 import os
 import cv2
+import time
 import math
 from openvino.inference_engine import IENetwork, IECore
 
@@ -29,6 +30,8 @@ class Model_Gaze:
 
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
+        self.inference_times = []
+        self.processing_times = []
 
     def load_model(self):
         '''
@@ -76,9 +79,10 @@ class Model_Gaze:
         p_frame = p_frame.reshape(1, *p_frame.shape)
         return p_frame
 
-    def preprocess_output(self, outputs):
+    def preprocess_output(self, outputs, image):
         '''
         Before feeding the output of this model to the next model,
         you might have to preprocess the output. This function is where you can do that.
         '''
-        raise NotImplementedError
+        output = outputs[self.output]
+        return output[0, :]
