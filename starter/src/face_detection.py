@@ -4,6 +4,7 @@ This has been provided just to give you an idea of how to structure your model c
 '''
 import os
 import cv2
+import time
 import numpy as np
 from openvino.inference_engine import IENetwork, IECore
 
@@ -29,6 +30,8 @@ class Model_Face:
 
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
+        self.inference_times = []
+        self.processing_times = []
 
     def load_model(self):
         '''
@@ -46,12 +49,10 @@ class Model_Face:
         '''
         t1 = time.time()
         net_input = self.preprocess_input(image)
-
         t2 = time.time()
         infer_request_handle = self.network.start_async(request_id=0, inputs=net_input)
         infer_request_handle.wait()
         self.inference_times.append(time.time() - t2)
-
         net_output = infer_request_handle.outputs
         output = self.preprocess_output(net_output, image)
         self.processing_times.append(time.time() - t1)
@@ -81,4 +82,14 @@ class Model_Face:
         Before feeding the output of this model to the next model,
         you might have to preprocess the output. This function is where you can do that.
         '''
-        raise NotImplementedError
+        coordinates = []
+        output = outputs[self.output][0][0]
+        for box in output:
+            conf = box[2]
+            if conf >= 0.5:
+                xmin = int(box[3] * image.shape[1])
+                ymin = int(box[4] * image.shape[0])
+                xmax = int(box[5] * image.shape[1])
+                ymax = int(box[6] * image.shape[0])
+                coordinates.append([xmin, ymin, xmax, ymax])
+        return coordinates
