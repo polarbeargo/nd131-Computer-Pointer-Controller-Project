@@ -42,23 +42,23 @@ class Model_Gaze:
         self.exec_network = self.core.load_network(self.network, self.device)
         return self.exec_network
 
-    def predict(self, image):
+    def predict(self, left_eye, right_eye, head_position_angle):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        t1 = time.time()
-        net_input = self.preprocess_input(image)
+        processed_right_eye = self.preprocess_input(right_eye)
+        processed_left_eye = self.preprocess_input(left_eye)
+        
+        self.exec_network.start_async(request_id=0,
+                                      inputs={'right_eye_image': processed_right_eye,
+                                          'left_eye_image': processed_left_eye,
+                                              'head_pose_angles': head_position_angle})
 
-        t2 = time.time()
-        infer_request_handle = self.network.start_async(request_id=0, inputs=net_input)
-        infer_request_handle.wait()
-        self.inference_times.append(time.time() - t2)
-
-        net_output = infer_request_handle.outputs
-        output = self.preprocess_output(net_output, image)
-        self.processing_times.append(time.time() - t1)
-        return output
+        if self.exec_network.requests[0].wait(-1) == 0:
+            result = self.exec_network.requests[0].outputs[self.output]
+            cords = self.preprocess_output(result[0], head_position_angle)
+            return result[0], cords
 
     def check_model(self):
         supported_layers = self.core.query_network(network=self.network, device_name=self.device)
@@ -79,10 +79,18 @@ class Model_Gaze:
         p_frame = p_frame.reshape(1, *p_frame.shape)
         return p_frame
 
-    def preprocess_output(self, outputs, image):
+    def preprocess_output(self, outputs, head_position):
         '''
         Before feeding the output of this model to the next model,
         you might have to preprocess the output. This function is where you can do that.
         '''
-        output = outputs[self.output]
-        return output[0, :]
+        roll = head_position[2]
+        gaze_vector = outputs / cv2.norm(outputs)
+
+        cosValue = math.cos(roll * math.pi / 180.0)
+        sinValue = math.sin(roll * math.pi / 180.0)
+
+
+        x = gaze_vector[0] * cosValue * gaze_vector[1] * sinValue
+        y = gaze_vector[0] * sinValue * gaze_vector[1] * cosValue
+        return (x, y)
