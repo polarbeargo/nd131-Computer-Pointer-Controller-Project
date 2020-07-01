@@ -12,7 +12,7 @@ class Model_Pose:
     '''
     Class for the Face Detection Model.
     '''
-    def __init__(self, model_name, device='CPU', extensions=None):
+    def __init__(self, model_name, device='CPU', extensions=None, threshold=0.6):
         '''
         TODO: Use this to set your instance variables.
         '''
@@ -22,7 +22,7 @@ class Model_Pose:
         self.output = None
         self.exec_network = None
         self.device = device
-
+        self.threshold= threshold
         self.core = IECore()
         self.network = self.core.read_network(model=str(model_name),
                                               weights=str(os.path.splitext(model_name)[0] + ".bin"))
