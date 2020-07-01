@@ -128,18 +128,18 @@ def main():
             exit(1)
 
     # Instantiate model
-    face_detection_model = Model_Face(model_path_dict['FaceDetectionModel'], device_name, threshold=prob_threshold)
-    landmark_detection_model = Model_Landmark(model_path_dict['LandmarkRegressionModel'], device_name, threshold=prob_threshold)
-    head_pose_estimation_model = Model_Pose(model_path_dict['HeadPoseEstimationModel'], device_name, threshold=prob_threshold)
-    gaze_estimation_model = Model_Gaze(model_path_dict['GazeEstimationModel'], device_name, threshold=prob_threshold)
+    face_model = Model_Face(model_path_dict['FaceDetectionModel'], device_name, threshold=prob_threshold)
+    landmark_model = Model_Landmark(model_path_dict['LandmarkRegressionModel'], device_name, threshold=prob_threshold)
+    head_pose_model = Model_Pose(model_path_dict['HeadPoseEstimationModel'], device_name, threshold=prob_threshold)
+    gaze_model = Model_Gaze(model_path_dict['GazeEstimationModel'], device_name, threshold=prob_threshold)
     mouse_controller = MouseController('medium', 'fast')
 
     # Load Models
     start_model_load_time = time.time()
-    face_detection_model.load_model()
-    landmark_detection_model.load_model()
-    head_pose_estimation_model.load_model()
-    gaze_estimation_model.load_model()
+    face_model.load_model()
+    landmark_model.load_model()
+    head_pose_model.load_model()
+    gaze_model.load_model()
     total_model_load_time = time.time() - start_model_load_time
 
     feeder.load_data()
@@ -155,11 +155,10 @@ def main():
             break
 
         frame_count += 1
-
         key = cv2.waitKey(60)
 
         try:
-            face_cords, cropped_image = face_detection_model.predict(frame)
+            face_cords, cropped_image = face_model.predict(frame)
 
             if type(cropped_image) == int:
                 logger.warning("Unable to detect the face")
@@ -167,9 +166,9 @@ def main():
                     break
                 continue
 
-            left_eye_image, right_eye_image, eye_cords = landmark_detection_model.predict(cropped_image)
-            pose_output = head_pose_estimation_model.predict(cropped_image)
-            mouse_cord, gaze_vector = gaze_estimation_model.predict(left_eye_image, right_eye_image, pose_output)
+            left_eye_image, right_eye_image, eye_cords = landmark_model.predict(cropped_image)
+            pose_output = head_pose_model.predict(cropped_image)
+            mouse_cord, gaze_vector = gaze_model.predict(left_eye_image, right_eye_image, pose_output)
 
         except Exception as e:
             logger.warning("Could predict using model" + str(e) + " for frame " + str(frame_count))
