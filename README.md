@@ -15,10 +15,11 @@ which includes the following:
 
 2. Clone the repository from this URL: https://github.com/Polarbeargo/Computer-Pointer-Controller-Project.git
            
-3. Execute <i>run.sh</i> from working directory to install prerequisites.
+3. In Windows Command Prompt from working directory to install prerequisites.
 
          cd Computer-Pointer-Controller
-        ./run.sh
+         pip install -r requirements.txt
+
 
 ## Demo
 
