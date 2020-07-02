@@ -99,7 +99,7 @@ def draw_preview(
 def main():
     args = build_argparser().parse_args()
     logger = logging.getLogger('main')
-
+    logging.basicConfig(filename='example.log',level=logging.ERROR)
     # Initialize variables with the input arguments for easy access
     model_path_dict = {
         'FaceDetectionModel': args.faceDetectionModel,
