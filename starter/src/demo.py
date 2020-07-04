@@ -146,15 +146,16 @@ def main():
     feeder.load_data()
 
     out_video = cv2.VideoWriter(os.path.join('output_video.mp4'), cv2.VideoWriter_fourcc(*'avc1'), int(feeder.get_fps()/10),
-                                (1920, 1080), True)
+                                (500, 500), True)
 
     frame_count = 0
     for ret, frame in feeder.next_batch():
-
         if not ret:
             break
 
         frame_count += 1
+        if frame_count%5==0:
+            cv2.imshow('video',cv2.resize(frame,(500,500)))
         key = cv2.waitKey(60)
 
         try:
@@ -165,11 +166,11 @@ def main():
                 if key == 27:
                     break
                 continue
-
+            print('pass fd')
             left_eye_image, right_eye_image, eye_cords = landmark_model.predict(cropped_image)
             pose_output = head_pose_model.predict(cropped_image)
             mouse_cord, gaze_vector = gaze_model.predict(left_eye_image, right_eye_image, pose_output)
-
+            print('ld')
         except Exception as e:
             logger.warning("Could predict using model" + str(e) + " for frame " + str(frame_count))
             continue
@@ -190,11 +191,6 @@ def main():
 
         if key == 27:
             break
-
-    try:
-        os.mkdir(output_path)
-    except OSError as error:
-        logger.error(error)
 
     logger.info('Video stream ended')
     cv2.destroyAllWindows()
