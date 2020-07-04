@@ -100,6 +100,7 @@ def main():
     args = build_argparser().parse_args()
     logger = logging.getLogger('main')
     logging.basicConfig(filename='example.log',level=logging.ERROR)
+    
     # Initialize variables with the input arguments for easy access
     model_path_dict = {
         'FaceDetectionModel': args.faceDetectionModel,
@@ -148,7 +149,6 @@ def main():
                                 (1920, 1080), True)
 
     frame_count = 0
-    start_inference_time = time.time()
     for ret, frame in feeder.next_batch():
 
         if not ret:
@@ -191,23 +191,10 @@ def main():
         if key == 27:
             break
 
-    total_time = time.time() - start_inference_time
-    total_inference_time = round(total_time, 1)
-    fps = frame_count / total_inference_time
-
     try:
         os.mkdir(output_path)
     except OSError as error:
         logger.error(error)
-
-    with open(output_path+'stats.txt', 'w') as f:
-        f.write(str(total_inference_time) + '\n')
-        f.write(str(fps) + '\n')
-        f.write(str(total_model_load_time) + '\n')
-
-    logger.info('Model load time: ' + str(total_model_load_time))
-    logger.info('Inference time: ' + str(total_inference_time))
-    logger.info('FPS: ' + str(fps))
 
     logger.info('Video stream ended')
     cv2.destroyAllWindows()
