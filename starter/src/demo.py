@@ -136,12 +136,10 @@ def main():
     mouse_controller = MouseController('medium', 'fast')
 
     # Load Models
-    start_model_load_time = time.time()
     face_model.load_model()
     landmark_model.load_model()
     head_pose_model.load_model()
     gaze_model.load_model()
-    total_model_load_time = time.time() - start_model_load_time
 
     feeder.load_data()
 
@@ -152,7 +150,6 @@ def main():
     for ret, frame in feeder.next_batch():
         if not ret:
             break
-
         frame_count += 1
         if frame_count%5==0:
             cv2.imshow('video',cv2.resize(frame,(500,500)))
@@ -160,7 +157,7 @@ def main():
 
         try:
             face_cords, cropped_image = face_model.predict(frame)
-
+            print(face_cords)
             if type(cropped_image) == int:
                 logger.warning("Unable to detect the face")
                 if key == 27:
@@ -172,7 +169,7 @@ def main():
             mouse_cord, gaze_vector = gaze_model.predict(left_eye_image, right_eye_image, pose_output)
             print('ld')
         except Exception as e:
-            logger.warning("Could predict using model" + str(e) + " for frame " + str(frame_count))
+            print("Could predict using model" + str(e) + " for frame " + str(frame_count))
             continue
 
         image = cv2.resize(frame, (500, 500))
