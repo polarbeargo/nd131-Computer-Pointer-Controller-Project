@@ -42,21 +42,26 @@ class Model_Face:
         self.exec_network = self.core.load_network(self.network, self.device)
         return self.exec_network
 
-    def predict(self, image):
+    def predict(self, image,request_id = 0):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        t1 = time.time()
         net_input = self.preprocess_input(image)
-        t2 = time.time()
-        infer_request_handle = self.network.start_async(request_id=0, inputs=net_input)
-        infer_request_handle.wait()
-        self.inference_times.append(time.time() - t2)
-        net_output = infer_request_handle.outputs
-        output = self.preprocess_output(net_output, image)
-        self.processing_times.append(time.time() - t1)
-        return output
+        self.network.start_async(request_id, inputs=net_input)
+        if self.wait ==0:
+
+            net_output = self.network.request[0].outputs[self.output]
+            output = self.preprocess_output(net_output, image)
+            if(len(output)==0):
+                return 0,0
+            output = output[0]
+            w = image.shape[1]
+            h = image.shape[0]
+            output = output*np.array([w, h, w,h])
+            output = output.astype(np.int32)
+            crop_output = image[output[1]:output[3, output[0]:output[2]]]
+        return crop_output, output
 
     def check_model(self):
         supported_layers = self.core.query_network(network=self.network, device_name=self.device)
