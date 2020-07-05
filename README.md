@@ -59,7 +59,7 @@ Argument|Type|Description
         1. face-detection-adas-binary-0001
         2. gaze-estimation-adas-0002
         3. head-pose-estimation-adas-0001
-        4. facial-landmarks-35-adas-0002
+        4. landmarks-regression-retail-0009
 - <b>src</b> folder contains python files of the app
     
     + [demo.py](./starter/src/demo.py) : Main driver script to run the app
