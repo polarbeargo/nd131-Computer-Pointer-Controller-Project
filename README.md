@@ -68,7 +68,6 @@ Argument|Type|Description
     + [gaze_estimation.py](./starter/src/gaze_estimation.py) : Gaze Estimation related inference code
     + [head_pose_estimation.py](./starter/src/head_pose_estimation.py) : Head Pose Estimation related inference code
     + [input_feeder.py](./starter/src/input_feeder.py) : input selection related code
-    + [model.py](./starter/src/model.py) : started code for any pre-trained model
     + [mouse_controller.py](./starter/src/mouse_controller.py) : Mouse Control related utilities.
     
 - <b>README.md</b> File that you are reading right now.
