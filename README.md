@@ -19,6 +19,8 @@ which includes the following:
 
          cd Computer-Pointer-Controller
          pip install -r requirements.txt
+         cd C:\Program Files (x86)\IntelSWTools\openvino\bin
+         setupvars.bat
          or
          ./run.sh
 
@@ -31,7 +33,7 @@ We have provided three ways to run the application
 
 Execute following command from the root directory of the project with your configuration.
     
-    python src/demo.py -f models/intel/face-detection-adas-binary-0001/INT1/face-detection-adas-binary-0001.xml -l models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.xml -hp models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001.xml -ge models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002.xml -i bin/demo.mp4 -it video -d CPU -debug headpose gaze
+    python starter/src/demo.py -fd models/intel/face-detection-adas-binary-0001/FP32-INT1/face-detection-adas-binary-0001.xml -lr models/intel/landmarks-regression-retail-0009/FP16/landmarks-regression-retail-0009.xml -hp models/intel/head-pose-estimation-adas-0001/FP16/head-pose-estimation-adas-0001.xml -ge models/intel/gaze-estimation-adas-0002/FP16/gaze-estimation-adas-0002.xml -d CPU -i starter/bin/demo.mp4 -flags ff fl fh fg
 
 ## Documentation
 
