@@ -59,7 +59,7 @@ Argument|Type|Description
         1. face-detection-adas-binary-0001
         2. gaze-estimation-adas-0002
         3. head-pose-estimation-adas-0001
-        4. facial-landmarks-35-adas-0002
+        4. landmarks-regression-retail-0009
 - <b>src</b> folder contains python files of the app
     
     + [demo.py](./starter/src/demo.py) : Main driver script to run the app
@@ -68,7 +68,6 @@ Argument|Type|Description
     + [gaze_estimation.py](./starter/src/gaze_estimation.py) : Gaze Estimation related inference code
     + [head_pose_estimation.py](./starter/src/head_pose_estimation.py) : Head Pose Estimation related inference code
     + [input_feeder.py](./starter/src/input_feeder.py) : input selection related code
-    + [model.py](./starter/src/model.py) : started code for any pre-trained model
     + [mouse_controller.py](./starter/src/mouse_controller.py) : Mouse Control related utilities.
     
 - <b>README.md</b> File that you are reading right now.
