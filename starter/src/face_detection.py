@@ -17,8 +17,6 @@ class Model_Face:
         '''
         TODO: Use this to set your instance variables.
         '''
-        self.core = None
-        self.network = None
         self.input = None
         self.output = None
         self.exec_network = None
@@ -30,9 +28,8 @@ class Model_Face:
 
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
-        self.inference_times = []
-        self.processing_times = []
-
+        self.exec_network = self.core.load_network(network=self.network,device_name=self.device,num_requests=1)
+        
     def load_model(self):
         '''
         TODO: You will need to complete this method.
@@ -42,26 +39,24 @@ class Model_Face:
         self.exec_network = self.core.load_network(self.network, self.device)
         return self.exec_network
 
-    def predict(self, image,request_id = 0):
+    def predict(self, image, prob_threshold):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        net_input = self.preprocess_input(image)
-        self.network.start_async(request_id, inputs=net_input)
-        if self.wait ==0:
-
-            net_output = self.network.request[0].outputs[self.output]
-            output = self.preprocess_output(net_output, image)
-            if(len(output)==0):
-                return 0,0
-            output = output[0]
-            w = image.shape[1]
-            h = image.shape[0]
-            output = output*np.array([w, h, w,h])
-            output = output.astype(np.int32)
-            crop_output = image[output[1]:output[3, output[0]:output[2]]]
-        return crop_output, output
+        
+        img_processed = self.preprocess_input(image.copy())
+        outputs = self.exec_network.infer({self.input:img_processed})
+        coords = self.preprocess_output(outputs, prob_threshold)
+        if (len(coords)==0):
+            return 0, 0
+        coords = coords[0]
+        h=image.shape[0]
+        w=image.shape[1]
+        coords = coords* np.array([w, h, w, h])
+        coords = coords.astype(np.int32)
+        cropped_face = image[coords[1]:coords[3], coords[0]:coords[2]]
+        return cropped_face, coords
 
     def check_model(self):
         supported_layers = self.core.query_network(network=self.network, device_name=self.device)
@@ -82,7 +77,7 @@ class Model_Face:
         p_frame = p_frame.reshape(1, *p_frame.shape)
         return p_frame
 
-    def preprocess_output(self, outputs):
+    def preprocess_output(self, outputs, prob_threshold):
         '''
         Before feeding the output of this model to the next model,
         you might have to preprocess the output. This function is where you can do that.
@@ -91,10 +86,11 @@ class Model_Face:
         output = outputs[self.output][0][0]
         for box in output:
             conf = box[2]
-            if conf >= 0.5:
-                xmin = int(box[3] * image.shape[1])
-                ymin = int(box[4] * image.shape[0])
-                xmax = int(box[5] * image.shape[1])
-                ymax = int(box[6] * image.shape[0])
+            if conf >= prob_threshold:
+                xmin = box[3]
+                ymin = box[4]
+                xmax = box[5]
+                ymax = box[6]
                 coordinates.append([xmin, ymin, xmax, ymax])
         return coordinates
+        
