@@ -1,6 +1,0 @@
-
-*.pyc
-venv/bin/python3
-venv/bin/python
-venv/pyvenv.cfg
-venv/lib64
