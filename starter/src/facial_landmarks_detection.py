@@ -41,23 +41,39 @@ class Model_Landmark:
         self.exec_network = self.core.load_network(self.network, self.device)
         return self.exec_network
 
-    def predict(self, image):
+    def predict(self, image, prob_threshold):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        t1 = time.time()
+        const = 10
         net_input = self.preprocess_input(image)
-
-        t2 = time.time()
-        infer_request_handle = self.network.start_async(request_id=0, inputs=net_input)
-        infer_request_handle.wait()
-        self.inference_times.append(time.time() - t2)
-
-        net_output = infer_request_handle.outputs
-        output = self.preprocess_output(net_output)
-        self.processing_times.append(time.time() - t1)
-        return output
+        outputs = self.exec_network.infer({self.input:net_input})
+        coords = self.preprocess_output(outputs, prob_threshold)
+        if (len(coords)==0):
+            return 0, 0
+        print('Hey dont stress')
+        coords = coords[0]
+        h=image.shape[0]
+        w=image.shape[1]
+        coords = coords* np.array([w, h, w, h])
+        coords = coords.astype(np.int32)
+        l_xmin=coords[0]-const
+        l_ymin=coords[1]-const
+        l_xmax=coords[0]+const
+        l_ymax=coords[1]+const
+        
+        r_xmin=coords[2]-const
+        r_ymin=coords[3]-const
+        r_xmax=coords[2]+const
+        r_ymax=coords[3]+const
+        cv2.rectangle(image,(l_xmin,l_ymin),(l_xmax,l_ymax),(255,0,0))
+        cv2.rectangle(image,(r_xmin,r_ymin),(r_xmax,r_ymax),(255,0,0))
+        cv2.imshow("Image",image)
+        left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
+        right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
+        eye_coords = [[l_xmin,l_ymin,l_xmax,l_ymax], [r_xmin,r_ymin,r_xmax,r_ymax]]
+        return left_eye, right_eye, eye_coords
 
     def check_model(self):
         supported_layers = self.core.query_network(network=self.network, device_name=self.device)
@@ -72,10 +88,12 @@ class Model_Landmark:
         Before feeding the data into the model for inference,
         you might have to preprocess it. This function is where you can do that.
         '''
+        image = image.astype(np.float32)
         net_input_shape = self.network.inputs[self.input].shape
         p_frame = cv2.resize(image, (net_input_shape[3], net_input_shape[2]))
         p_frame = p_frame.transpose(2, 0, 1)
         p_frame = p_frame.reshape(1, *p_frame.shape)
+        print(p_frame)
         return p_frame
 
     def preprocess_output(self, outputs):
