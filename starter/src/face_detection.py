@@ -44,7 +44,6 @@ class Model_Face:
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        
         img_processed = self.preprocess_input(image.copy())
         outputs = self.exec_network.infer({self.input:img_processed})
         coords = self.preprocess_output(outputs, prob_threshold)
