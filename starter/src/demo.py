@@ -141,6 +141,12 @@ def main():
     head_pose_model.load_model()
     gaze_model.load_model()
 
+    # Check extention of these unsupported layers
+    face_model.check_model()
+    landmark_model.check_model()
+    head_pose_model.check_model()
+    gaze_model.check_model()
+
     feeder.load_data()
 
     out_video = cv2.VideoWriter(os.path.join('output_video.mp4'), cv2.VideoWriter_fourcc(*'avc1'), int(feeder.get_fps()/10),
@@ -151,23 +157,20 @@ def main():
         if not ret:
             break
         frame_count += 1
-        if frame_count%5==0:
-            cv2.imshow('video',cv2.resize(frame,(500,500)))
         key = cv2.waitKey(60)
 
         try:
-            face_cords, cropped_image = face_model.predict(frame)
-            print(face_cords)
+            face_cords, cropped_image = face_model.predict(frame, prob_threshold)
             if type(cropped_image) == int:
-                logger.warning("Unable to detect the face")
+                print("Unable to detect the face")
                 if key == 27:
                     break
                 continue
             print('pass fd')
-            left_eye_image, right_eye_image, eye_cords = landmark_model.predict(cropped_image)
-            pose_output = head_pose_model.predict(cropped_image)
-            mouse_cord, gaze_vector = gaze_model.predict(left_eye_image, right_eye_image, pose_output)
+            left_eye, right_eye, eye_cords = landmark_model.predict(cropped_image, prob_threshold)
             print('ld')
+            pose_output = head_pose_model.predict(cropped_image)
+            mouse_cord, gaze_vector = gaze_model.predict(left_eye, right_eye, pose_output)
         except Exception as e:
             print("Could predict using model" + str(e) + " for frame " + str(frame_count))
             continue
@@ -176,7 +179,7 @@ def main():
 
         if not len(preview_flags) == 0:
             preview_frame = draw_preview(
-                frame, preview_flags, cropped_image, left_eye_image, right_eye_image,
+                frame, preview_flags, cropped_image, left_eye, right_eye,
                 face_cords, eye_cords, pose_output, gaze_vector)
             image = np.hstack((cv2.resize(frame, (500, 500)), cv2.resize(preview_frame, (500, 500))))
 
