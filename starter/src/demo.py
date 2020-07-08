@@ -51,7 +51,7 @@ def build_argparser():
     return parser
 
 def draw_preview(
-        frame, preview_flags, cropped_image, left_eye_image, right_eye_image,
+        frame, preview_flags, cropped_image, left_eye, right_eye,
         face_cords, eye_cords, pose_output, gaze_vector):
     preview_frame = frame.copy()
 
@@ -87,9 +87,9 @@ def draw_preview(
             1, (0, 0, 0), 2)
 
         x, y, w = int(gaze_vector[0] * 12), int(gaze_vector[1] * 12), 160
-        le = cv2.line(left_eye_image.copy(), (x - w, y - w), (x + w, y + w), (255, 0, 255), 2)
+        le = cv2.line(left_eye.copy(), (x - w, y - w), (x + w, y + w), (255, 0, 255), 2)
         cv2.line(le, (x - w, y + w), (x + w, y - w), (255, 0, 255), 2)
-        re = cv2.line(right_eye_image.copy(), (x - w, y - w), (x + w, y + w), (255, 0, 255), 2)
+        re = cv2.line(right_eye.copy(), (x - w, y - w), (x + w, y + w), (255, 0, 255), 2)
         cv2.line(re, (x - w, y + w), (x + w, y - w), (255, 0, 255), 2)
         preview_frame[eye_cords[0][1]:eye_cords[0][3], eye_cords[0][0]:eye_cords[0][2]] = le
         preview_frame[eye_cords[1][1]:eye_cords[1][3], eye_cords[1][0]:eye_cords[1][2]] = re
