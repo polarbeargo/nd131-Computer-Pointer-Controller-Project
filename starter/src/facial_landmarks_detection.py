@@ -47,7 +47,7 @@ class Model_Landmark:
         This method is meant for running predictions on the input image.
         '''
         const = 10
-        net_input = self.preprocess_input(image)
+        net_input = self.preprocess_input(image.copy())
         outputs = self.exec_network.infer({self.input:net_input})
         coords = self.preprocess_output(outputs, prob_threshold)
         if (len(coords)==0):
@@ -89,13 +89,18 @@ class Model_Landmark:
         you might have to preprocess it. This function is where you can do that.
         '''
         image = image.astype(np.float32)
-        net_input_shape = self.network.inputs[self.input].shape
-        p_frame = cv2.resize(image, (net_input_shape[3], net_input_shape[2]))
-        p_frame = p_frame.transpose(2, 0, 1)
-        p_frame = p_frame.reshape(1, *p_frame.shape)
-        print(p_frame)
-        return p_frame
-
+        # net_input_shape = self.network.inputs[self.input].shape
+        # p_frame = cv2.resize(image, (net_input_shape[3], net_input_shape[2]))
+        # print(np.shape(p_frame))
+        # p_frame = p_frame.transpose((2, 0, 1))
+        # print('work')
+        # p_frame = p_frame.reshape(1, *p_frame.shape)
+        (n, c, h, w) = self.network.inputs[self.input].shape
+        frame = cv2.resize(image, (w, h), interpolation = cv2.INTER_AREA)
+        print((n,c,h,w))
+        resized_frame = frame.reshape((n, c, h, w))
+        return {self.input_name:resized_frame}
+        
     def preprocess_output(self, outputs):
         '''
         Before feeding the output of this model to the next model,
