@@ -50,6 +50,38 @@ def build_argparser():
     parser.add_argument("-o", '--output_path', default='/results/', type=str)
     return parser
 
+def init_model(args):
+    global face_model, landmark_model, head_pose_model, gaze_model, mouse_controller
+    device_name = args.device
+    prob_threshold = args.prob_threshold
+
+    # Initialize variables with the input arguments for easy access
+    model_path_dict = {
+        'FaceDetectionModel': args.faceDetectionModel,
+        'LandmarkRegressionModel': args.landmarkRegressionModel,
+        'HeadPoseEstimationModel': args.headPoseEstimationModel,
+        'GazeEstimationModel': args.gazeEstimationModel
+    }
+
+    # Instantiate model
+    face_model = Model_Face(model_path_dict['FaceDetectionModel'], device_name, threshold=prob_threshold)
+    landmark_model = Model_Landmark(model_path_dict['LandmarkRegressionModel'], device_name, threshold=prob_threshold)
+    head_pose_model = Model_Pose(model_path_dict['HeadPoseEstimationModel'], device_name, threshold=prob_threshold)
+    gaze_model = Model_Gaze(model_path_dict['GazeEstimationModel'], device_name, threshold=prob_threshold)
+    mouse_controller = MouseController('medium', 'fast')
+
+    # Load Models
+    face_model.load_model()
+    landmark_model.load_model()
+    head_pose_model.load_model()
+    gaze_model.load_model()
+
+    # Check extention of these unsupported layers
+    face_model.check_model()
+    landmark_model.check_model()
+    head_pose_model.check_model()
+    gaze_model.check_model()
+
 def draw_preview(
         frame, preview_flags, cropped_image, left_eye, right_eye,
         face_cords, eye_cords, pose_output, gaze_vector):
@@ -100,7 +132,8 @@ def main():
     args = build_argparser().parse_args()
     logger = logging.getLogger('main')
     logging.basicConfig(filename='example.log',level=logging.ERROR)
-    
+    init_model(args)
+
     # Initialize variables with the input arguments for easy access
     model_path_dict = {
         'FaceDetectionModel': args.faceDetectionModel,
@@ -111,9 +144,8 @@ def main():
 
     preview_flags = args.previewFlags
     input_filename = args.input
-    device_name = args.device
-    prob_threshold = args.prob_threshold
     output_path = args.output_path
+    prob_threshold = args.prob_threshold
 
     if input_filename.lower() == 'cam':
         feeder = InputFeeder(input_type='cam')
@@ -128,27 +160,7 @@ def main():
             logger.error("Unable to find specified model file" + str(model_path))
             exit(1)
 
-    # Instantiate model
-    face_model = Model_Face(model_path_dict['FaceDetectionModel'], device_name, threshold=prob_threshold)
-    landmark_model = Model_Landmark(model_path_dict['LandmarkRegressionModel'], device_name, threshold=prob_threshold)
-    head_pose_model = Model_Pose(model_path_dict['HeadPoseEstimationModel'], device_name, threshold=prob_threshold)
-    gaze_model = Model_Gaze(model_path_dict['GazeEstimationModel'], device_name, threshold=prob_threshold)
-    mouse_controller = MouseController('medium', 'fast')
-
-    # Load Models
-    face_model.load_model()
-    landmark_model.load_model()
-    head_pose_model.load_model()
-    gaze_model.load_model()
-
-    # Check extention of these unsupported layers
-    face_model.check_model()
-    landmark_model.check_model()
-    head_pose_model.check_model()
-    gaze_model.check_model()
-
     feeder.load_data()
-
     out_video = cv2.VideoWriter(os.path.join('output_video.mp4'), cv2.VideoWriter_fourcc(*'avc1'), int(feeder.get_fps()/10),
                                 (500, 500), True)
 
