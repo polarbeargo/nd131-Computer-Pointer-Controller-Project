@@ -161,8 +161,11 @@ def main():
             exit(1)
 
     feeder.load_data()
-    out_video = cv2.VideoWriter(os.path.join('output_video.mp4'), cv2.VideoWriter_fourcc(*'avc1'), int(feeder.get_fps()/10),
-                                (500, 500), True)
+    w = int(feeder.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    h = int(feeder.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(feeder.cap.get(cv2.CAP_PROP_FPS))
+    out_video = cv2.VideoWriter(os.path.join('output_video.mp4'), cv2.VideoWriter_fourcc(*'avc1'), fps,
+                                (w, h), True)
 
     frame_count = 0
     for ret, frame in feeder.next_batch():
@@ -187,13 +190,13 @@ def main():
             print("Could predict using model" + str(e) + " for frame " + str(frame_count))
             continue
 
-        image = cv2.resize(frame, (500, 500))
+        image = cv2.resize(frame, (w, h))
 
         if not len(preview_flags) == 0:
             preview_frame = draw_preview(
                 frame, preview_flags, cropped_image, left_eye, right_eye,
                 face_cords, eye_cords, pose_output, gaze_vector)
-            image = np.hstack((cv2.resize(frame, (500, 500)), cv2.resize(preview_frame, (500, 500))))
+            image = np.hstack((cv2.resize(frame, (w, h)), cv2.resize(preview_frame, (w, h))))
 
         cv2.imshow('preview', image)
         out_video.write(frame)
