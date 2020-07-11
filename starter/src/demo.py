@@ -86,7 +86,7 @@ def draw_preview(
         frame, preview_flags, cropped_image, left_eye, right_eye,
         face_cords, eye_cords, pose_output, gaze_vector):
     preview_frame = frame.copy()
-
+    const = 10
     if 'ff' in preview_flags:
         if len(preview_flags) != 1:
             preview_frame = cropped_image
@@ -94,9 +94,9 @@ def draw_preview(
                       (0, 0, 0), 3)
 
     if 'fl' in preview_flags:
-        cv2.rectangle(cropped_image, (eye_cords[0][0]-10, eye_cords[0][1]-10), (eye_cords[0][2]+10, eye_cords[0][3]+10),
+        cv2.rectangle(cropped_image, (eye_cords[0][0]-const, eye_cords[0][1]-const), (eye_cords[0][2]+const, eye_cords[0][3]+const),
                       (255, 0, 0), 2)
-        cv2.rectangle(cropped_image, (eye_cords[1][0]-10, eye_cords[1][1]-10), (eye_cords[1][2]+10, eye_cords[1][3]+10),
+        cv2.rectangle(cropped_image, (eye_cords[1][0]-const, eye_cords[1][1]-const), (eye_cords[1][2]+const, eye_cords[1][3]+const),
                       (255, 0, 0), 2)
 
     if 'fh' in preview_flags:
