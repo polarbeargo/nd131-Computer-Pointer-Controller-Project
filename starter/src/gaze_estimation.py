@@ -30,8 +30,6 @@ class Model_Gaze:
 
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
-        self.inference_times = []
-        self.processing_times = []
 
     def load_model(self):
         '''
