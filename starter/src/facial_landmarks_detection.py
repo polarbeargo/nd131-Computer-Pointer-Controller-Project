@@ -48,6 +48,7 @@ class Model_Landmark:
         '''
         const = 10
         net_input = self.preprocess_input(image.copy())
+        print('Hello')
         outputs = self.exec_network.infer({self.input:net_input})
         coords = self.preprocess_output(outputs, prob_threshold)
         if (len(coords)==0):
@@ -98,7 +99,8 @@ class Model_Landmark:
         (n, c, h, w) = self.network.inputs[self.input].shape
         frame = cv2.resize(image, (w, h), interpolation = cv2.INTER_AREA)
         print((n,c,h,w))
-        resized_frame = frame.reshape((n, c, h, w))
+        resized_frame = frame.transpose((2, 0, 1)).reshape((n, c, h, w))
+        print('hi')
         return {self.input_name:resized_frame}
         
     def preprocess_output(self, outputs):
