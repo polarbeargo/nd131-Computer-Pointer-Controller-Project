@@ -176,6 +176,8 @@ def main():
 
         try:
             face_cords, cropped_image = face_model.predict(frame, prob_threshold)
+            #print(face_cords)
+            #print(cropped_image)
             if type(cropped_image) == int:
                 print("Unable to detect the face")
                 if key == 27:
@@ -191,7 +193,6 @@ def main():
             continue
 
         image = cv2.resize(frame, (w, h))
-
         if not len(preview_flags) == 0:
             preview_frame = draw_preview(
                 frame, preview_flags, cropped_image, left_eye, right_eye,
