@@ -27,8 +27,9 @@ class Model_Landmark:
         # self.network = self.core.read_network(model=str(model_name),
         #                                       weights=str(os.path.splitext(model_name)[0] + ".bin"))
         self.core = IECore()
-        self.input = next(iter(self.network.inputs))
-        self.output = next(iter(self.network.outputs))
+        self.input_name = next(iter(self.network.inputs))
+        self.output_name = next(iter(self.network.outputs))
+        self.input_shape = self.network.inputs[self.input_name].shape
 
     def load_model(self):
         '''
@@ -47,11 +48,11 @@ class Model_Landmark:
         left_eye = []
         right_eye = []
         processed_image = self.preprocess_input(image)
-        self.exec_network.start_async(request_id=0,inputs={self.input: processed_image})
+        self.exec_network.start_async(request_id=0,inputs={self.input_name: processed_image})
         if self.exec_network.requests[0].wait(-1) == 0:
-            outputs = self.exec_network.requests[0].outputs[self.output]
+            outputs = self.exec_network.requests[0].outputs[self.output_name]
             outputs= outputs[0]
-            left_eye, right_eye, eye_coords = self.draw_outputs(outputs, image)
+            left_eye, right_eye, eye_coords = self.draw(outputs, image)
             
         return left_eye, right_eye, eye_coords
 
@@ -93,18 +94,17 @@ class Model_Landmark:
         Before feeding the data into the model for inference,
         you might have to preprocess it. This function is where you can do that.
         '''
-        image = image.astype(np.float32)
-        # net_input_shape = self.network.inputs[self.input].shape
-        # p_frame = cv2.resize(image, (net_input_shape[3], net_input_shape[2]))
-        # print(np.shape(p_frame))
-        # p_frame = p_frame.transpose((2, 0, 1))
-        # print('work')
-        # p_frame = p_frame.reshape(1, *p_frame.shape)
-        n, c, h, w = self.network.inputs[self.input].shape
-        image = cv2.resize(image, (w, h))
-        image = image.transpose((2, 0, 1))
-        image = image.reshape((n, c, h, w))
-        
+        try:
+            image = image.astype(np.float32)
+            n,c,h,w = self.input_shape
+            image = cv2.resize(image, (w,h))
+            print(image.shape)
+            image = image.transpose((2,0,1))
+            print(image.shape)
+            image = image.reshape(n,c,h,w)
+            print('image')
+        except Exception as e:
+            print("Error While preprocessing Image in " + str(e))
         return image
         
     def preprocess_output(self, outputs):
