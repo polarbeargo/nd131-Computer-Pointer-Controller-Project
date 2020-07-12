@@ -138,7 +138,7 @@ def main():
                     break
                 continue
             print('pass fd')
-            left_eye, right_eye, eye_cords = landmark_model.predict(cropped_image, prob_threshold)
+            left_eye, right_eye, eye_cords = landmark_model.predict(cropped_image)
             print('ld')
             pose_output = head_pose_model.predict(cropped_image)
             mouse_cord, gaze_vector = gaze_model.predict(left_eye, right_eye, pose_output)

@@ -16,17 +16,17 @@ class Model_Landmark:
         '''
         TODO: Use this to set your instance variables.
         '''
-        self.core = None
-        self.network = None
-        self.input = None
-        self.output = None
-        self.exec_network = None
         self.device = device
-        self.threshold= threshold
+        self.threshold= threshold 
+        
+        model_bin = os.path.splitext(model_name)[0] + ".bin"
+        try:
+            self.network = IENetwork(model_name, model_bin)
+        except Exception as e:
+            print("Cannot initialize the network. Please enter correct model path. Error : %s", e)
+        # self.network = self.core.read_network(model=str(model_name),
+        #                                       weights=str(os.path.splitext(model_name)[0] + ".bin"))
         self.core = IECore()
-        self.network = self.core.read_network(model=str(model_name),
-                                              weights=str(os.path.splitext(model_name)[0] + ".bin"))
-
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
 
@@ -39,39 +39,20 @@ class Model_Landmark:
         self.exec_network = self.core.load_network(self.network, self.device)
         return self.exec_network
 
-    def predict(self, image, prob_threshold):
+    def predict(self, image):
         '''
         TODO: You will need to complete this method.
         This method is meant for running predictions on the input image.
         '''
-        const = 10
-        net_input = self.preprocess_input(image.copy())
-        print('Hello')
-        outputs = self.exec_network.infer({self.input:net_input})
-        coords = self.preprocess_output(outputs, prob_threshold)
-        if (len(coords)==0):
-            return 0, 0
-        print('Hey dont stress')
-        coords = coords[0]
-        h=image.shape[0]
-        w=image.shape[1]
-        coords = coords* np.array([w, h, w, h])
-        coords = coords.astype(np.int32)
-        l_xmin=coords[0]-const
-        l_ymin=coords[1]-const
-        l_xmax=coords[0]+const
-        l_ymax=coords[1]+const
-        
-        r_xmin=coords[2]-const
-        r_ymin=coords[3]-const
-        r_xmax=coords[2]+const
-        r_ymax=coords[3]+const
-        cv2.rectangle(image,(l_xmin,l_ymin),(l_xmax,l_ymax),(255,0,0))
-        cv2.rectangle(image,(r_xmin,r_ymin),(r_xmax,r_ymax),(255,0,0))
-        cv2.imshow("Image",image)
-        left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
-        right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
-        eye_coords = [[l_xmin,l_ymin,l_xmax,l_ymax], [r_xmin,r_ymin,r_xmax,r_ymax]]
+        left_eye = []
+        right_eye = []
+        processed_image = self.preprocess_input(image)
+        self.exec_network.start_async(request_id=0,inputs={self.input: processed_image})
+        if self.exec_network.requests[0].wait(-1) == 0:
+            outputs = self.exec_network.requests[0].outputs[self.output]
+            outputs= outputs[0]
+            left_eye, right_eye, eye_coords = self.draw_outputs(outputs, image)
+            
         return left_eye, right_eye, eye_coords
 
     def check_model(self):
@@ -81,6 +62,31 @@ class Model_Landmark:
             print("Check extention of these unsupported layers =>" + str(unsupported_layers))
             exit(1)
         print("All layers are supported")
+
+    def draw(self, outputs, image):
+        const = 10
+        outputs = outputs[0]
+        h=image.shape[0]
+        w=image.shape[1]
+        outputs = outputs* np.array([w, h, w, h])
+        outputs = outputs.astype(np.int32)
+        l_xmin=outputs[0]-const
+        l_ymin=outputs[1]-const
+        l_xmax=outputs[0]+const
+        l_ymax=outputs[1]+const
+        
+        r_xmin=outputs[2]-const
+        r_ymin=outputs[3]-const
+        r_xmax=outputs[2]+const
+        r_ymax=outputs[3]+const
+        cv2.rectangle(image,(l_xmin,l_ymin),(l_xmax,l_ymax),(255,0,0))
+        cv2.rectangle(image,(r_xmin,r_ymin),(r_xmax,r_ymax),(255,0,0))
+        cv2.imshow("Image",image)
+        left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
+        right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
+        eye_coords = [[l_xmin,l_ymin,l_xmax,l_ymax], [r_xmin,r_ymin,r_xmax,r_ymax]]
+        
+        return left_eye, right_eye, eye_coords
 
     def preprocess_input(self, image):
         '''
@@ -94,12 +100,12 @@ class Model_Landmark:
         # p_frame = p_frame.transpose((2, 0, 1))
         # print('work')
         # p_frame = p_frame.reshape(1, *p_frame.shape)
-        (n, c, h, w) = self.network.inputs[self.input].shape
-        frame = cv2.resize(image, (w, h), interpolation = cv2.INTER_AREA)
-        print((n,c,h,w))
-        resized_frame = frame.transpose((2, 0, 1)).reshape((n, c, h, w))
-        print('hi')
-        return {self.input_name:resized_frame}
+        n, c, h, w = self.network.inputs[self.input].shape
+        image = cv2.resize(image, (w, h))
+        image = image.transpose((2, 0, 1))
+        image = image.reshape((n, c, h, w))
+        
+        return image
         
     def preprocess_output(self, outputs):
         '''
