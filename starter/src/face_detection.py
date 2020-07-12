@@ -17,9 +17,6 @@ class Model_Face:
         '''
         TODO: Use this to set your instance variables.
         '''
-        self.input = None
-        self.output = None
-        self.exec_network = None
         self.device = device
         self.threshold = threshold
         self.core = IECore()
@@ -28,7 +25,6 @@ class Model_Face:
 
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
-        self.exec_network = self.core.load_network(network=self.network,device_name=self.device,num_requests=1)
         
     def load_model(self):
         '''

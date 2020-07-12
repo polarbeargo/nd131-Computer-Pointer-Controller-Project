@@ -17,11 +17,6 @@ class Model_Gaze:
         '''
         TODO: Use this to set your instance variables.
         '''
-        self.core = None
-        self.network = None
-        self.input = None
-        self.output = None
-        self.exec_network = None
         self.device = device
         self.threshold= threshold
         self.core = IECore()
