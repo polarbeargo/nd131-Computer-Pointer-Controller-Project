@@ -129,7 +129,7 @@ def main():
         key = cv2.waitKey(60)
 
         try:
-            face_cords, cropped_image = face_model.predict(frame, prob_threshold)
+            cropped_image, face_cords = face_model.predict(frame, prob_threshold)
             #print(face_cords)
             #print(cropped_image)
             if type(cropped_image) == int:
