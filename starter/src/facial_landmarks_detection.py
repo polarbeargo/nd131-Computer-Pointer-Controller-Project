@@ -47,11 +47,13 @@ class Model_Landmark:
         '''
         left_eye = []
         right_eye = []
+        eye_coords = []
         processed_image = self.preprocess_input(image)
         self.exec_network.start_async(request_id=0,inputs={self.input_name: processed_image})
         if self.exec_network.requests[0].wait(-1) == 0:
             outputs = self.exec_network.requests[0].outputs[self.output_name]
             outputs= outputs[0]
+            print('hello')
             left_eye, right_eye, eye_coords = self.draw(outputs, image)
             
         return left_eye, right_eye, eye_coords
@@ -66,13 +68,15 @@ class Model_Landmark:
 
     def draw(self, outputs, image):
         const = 10
-        outputs = outputs[0]
         h=image.shape[0]
         w=image.shape[1]
         outputs = outputs* np.array([w, h, w, h])
         outputs = outputs.astype(np.int32)
+        print(outputs)
         l_xmin=outputs[0]-const
+        
         l_ymin=outputs[1]-const
+      
         l_xmax=outputs[0]+const
         l_ymax=outputs[1]+const
         
@@ -80,6 +84,7 @@ class Model_Landmark:
         r_ymin=outputs[3]-const
         r_xmax=outputs[2]+const
         r_ymax=outputs[3]+const
+        print('cv')
         cv2.rectangle(image,(l_xmin,l_ymin),(l_xmax,l_ymax),(255,0,0))
         cv2.rectangle(image,(r_xmin,r_ymin),(r_xmax,r_ymax),(255,0,0))
         cv2.imshow("Image",image)
@@ -102,7 +107,7 @@ class Model_Landmark:
             image = image.transpose((2,0,1))
             print(image.shape)
             image = image.reshape(n,c,h,w)
-            print('image')
+            print(image.shape)
         except Exception as e:
             print("Error While preprocessing Image in " + str(e))
         return image
