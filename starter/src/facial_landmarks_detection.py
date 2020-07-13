@@ -69,21 +69,25 @@ class Model_Landmark:
         const = 10
         h=image.shape[0]
         w=image.shape[1]
+        outputs = outputs[0]
         outputs = outputs* np.array([w, h, w, h])
         outputs = outputs.astype(np.int32)
         print(outputs)
-        l_xmin=outputs[0]-const
-        
-        l_ymin=outputs[1]-const
-      
-        l_xmax=outputs[0]+const
-        l_ymax=outputs[1]+const
-        
-        r_xmin=outputs[2]-const
-        r_ymin=outputs[3]-const
-        r_xmax=outputs[2]+const
-        r_ymax=outputs[3]+const
+        left_eye_x = int(outputs[0] * w)
+        left_eye_y = int(outputs[1] * h)
+        right_eye_x = int(outputs[2] * w)
+        right_eye_y = int(outputs[3] * h)
+
+        l_xmin=left_eye_x-const
+        l_ymin=left_eye_y-const
+        l_xmax=left_eye_x+const
+        l_ymax=left_eye_y+const
+        r_xmin=right_eye_x-const
+        r_ymin=right_eye_y-const
+        r_xmax=right_eye_x+const
+        r_ymax=right_eye_y+const
         print('cv')
+        print(l_xmin)
         left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
         right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
         eye_coords = [[l_xmin,l_ymin,l_xmax,l_ymax], [r_xmin,r_ymin,r_xmax,r_ymax]]
