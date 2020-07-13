@@ -53,7 +53,6 @@ class Model_Landmark:
         if self.exec_network.requests[0].wait(-1) == 0:
             outputs = self.exec_network.requests[0].outputs[self.output_name]
             outputs= outputs[0]
-            print('hello')
             left_eye, right_eye, eye_coords = self.draw(outputs, image)
             
         return left_eye, right_eye, eye_coords
@@ -85,9 +84,6 @@ class Model_Landmark:
         r_xmax=outputs[2]+const
         r_ymax=outputs[3]+const
         print('cv')
-        cv2.rectangle(image,(l_xmin,l_ymin),(l_xmax,l_ymax),(255,0,0))
-        cv2.rectangle(image,(r_xmin,r_ymin),(r_xmax,r_ymax),(255,0,0))
-        cv2.imshow("Image",image)
         left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
         right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
         eye_coords = [[l_xmin,l_ymin,l_xmax,l_ymax], [r_xmin,r_ymin,r_xmax,r_ymax]]
@@ -103,11 +99,8 @@ class Model_Landmark:
             image = image.astype(np.float32)
             n,c,h,w = self.input_shape
             image = cv2.resize(image, (w,h))
-            print(image.shape)
             image = image.transpose((2,0,1))
-            print(image.shape)
             image = image.reshape(n,c,h,w)
-            print(image.shape)
         except Exception as e:
             print("Error While preprocessing Image in " + str(e))
         return image
