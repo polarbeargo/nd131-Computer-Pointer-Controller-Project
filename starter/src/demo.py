@@ -130,8 +130,7 @@ def main():
 
         try:
             cropped_image, face_cords = face_model.predict(frame, prob_threshold)
-            #print(face_cords)
-            #print(cropped_image)
+            
             if type(cropped_image) == int:
                 print("Unable to detect the face")
                 if key == 27:
