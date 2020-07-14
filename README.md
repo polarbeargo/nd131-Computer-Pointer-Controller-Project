@@ -1,4 +1,16 @@
-# Computer Pointer Controller Project
+# Computer Pointer Controller Project  
+
+[image1]: ./images/fdall.png    
+[image2]: ./images/gei8.png
+[image3]: ./images/gefp32.png 
+[image4]: ./images/gefp16.png
+[image5]: ./images/hpINT8.png
+[image6]: ./images/hpFP16.png
+[image7]: ./images/hpFP32.png
+[image8]: ./images/landmarksINT8.png
+[image9]: ./images/landmarksFP16.png
+[image10]: ./images/landmarksFP32.png
+
 
 In this project we controls the computer's mouse pointer with eye gaze.
 We have used 4 pre-trained model that is provided by Open Model Zoo.
@@ -82,35 +94,33 @@ Benchmark results on Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz:
 
 * face-detection-adas-binary-0001  
    
-Precision: INT8  
+Precision: INT8, FP16, FP32  
 
-Precision: FP16  
-
-Precision: FP32  
+![][image1]   
 
 * gaze-estimation-adas-0002 
 
 Precision: INT8  
-
-Precision: FP16  
-
-Precision: FP32  
-
+![][image5]  
+Precision: FP16   
+![][image4]  
+Precision: FP32    
+![][image3]  
 * head-pose-estimation-adas-0001
 
 Precision: INT8  
-
+![][image5]  
 Precision: FP16  
-
+![][image6]  
 Precision: FP32  
-
+![][image7]  
 * landmarks-regression-retail-0009 
 
 Precision: INT8  
-
+![][image8]  
 Precision: FP16  
-
+![][image9]  
 Precision: FP32  
-
+![][image10]  
 ## Stand Out Suggestions
 This is where you can provide information about the stand out suggestions that you have attempted.
