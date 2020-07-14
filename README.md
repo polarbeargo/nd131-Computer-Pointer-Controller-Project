@@ -78,7 +78,39 @@ Argument|Type|Description
 *TODO:* Include the benchmark results of running your model on multiple hardwares and multiple model precisions. Your benchmarks can include: model loading time, input/output processing time, model inference time etc.
 
 ## Results
-*TODO:* Discuss the benchmark results and explain why you are getting the results you are getting. For instance, explain why there is difference in inference time for FP32, FP16 and INT8 models.
+Benchmark results on Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz:
+
+* face-detection-adas-binary-0001  
+   
+Precision: INT8  
+
+Precision: FP16  
+
+Precision: FP32  
+
+* gaze-estimation-adas-0002 
+
+Precision: INT8  
+
+Precision: FP16  
+
+Precision: FP32  
+
+* head-pose-estimation-adas-0001
+
+Precision: INT8  
+
+Precision: FP16  
+
+Precision: FP32  
+
+* landmarks-regression-retail-0009 
+
+Precision: INT8  
+
+Precision: FP16  
+
+Precision: FP32  
 
 ## Stand Out Suggestions
 This is where you can provide information about the stand out suggestions that you have attempted.
