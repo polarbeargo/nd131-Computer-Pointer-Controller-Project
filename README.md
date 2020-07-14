@@ -101,7 +101,7 @@ Precision: INT8, FP16, FP32
 * gaze-estimation-adas-0002 
 
 Precision: INT8  
-![][image5]  
+![][image2]  
 Precision: FP16   
 ![][image4]  
 Precision: FP32    
