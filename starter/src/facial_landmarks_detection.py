@@ -24,7 +24,7 @@ class Model_Landmark:
             self.network = IENetwork(model_name, model_bin)
         except Exception as e:
             print("Cannot initialize the network. Please enter correct model path. Error : %s", e)
-            
+
         self.core = IECore()
         self.input_name = next(iter(self.network.inputs))
         self.output_name = next(iter(self.network.outputs))
@@ -78,6 +78,9 @@ class Model_Landmark:
         r_ymin=int(right_eye_y)-20
         r_xmax=int(right_eye_x)+20
         r_ymax=int(right_eye_y)+20
+        cv2.rectangle(image,(l_xmin,l_ymin),(l_xmax,l_ymax),(255,0,0))
+        cv2.rectangle(image,(r_xmin,r_ymin),(r_xmax,r_ymax),(255,0,0))
+        cv2.imshow("frame",image)
         left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
         right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
         eye_coords = [[int(l_xmin),int(l_ymin),int(l_xmax),int(l_ymax)], [int(r_xmin),int(r_ymin),int(r_xmax),int(r_ymax)]]
