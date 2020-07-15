@@ -53,14 +53,14 @@ Execute following command from the root directory of the project with your confi
 
 Argument|Type|Description
 | ------------- | ------------- | -------------
--f | Mandatory | Path to .xml file of Face Detection model.
--l | Mandatory | Path to .xml file of Facial Landmark Detection model.
--hp| Mandatory | Path to .xml file of Head Pose Estimation model.
--ge| Mandatory | Path to .xml file of Gaze Estimation model.
+-fd | Mandatory | Path to .xml file of Face Detection model.
+-fl | Mandatory | Path to .xml file of Facial Landmark Detection model.
+-fh| Mandatory | Path to .xml file of Head Pose Estimation model.
+-fg| Mandatory | Path to .xml file of Gaze Estimation model.
 -i| Mandatory | Path to video file or enter cam for webcam
--it| Mandatory | Provide the source of video frames.
--debug  | Optional | To debug each model's output visually, type the model name with comma seperated after --debug
--ld | Optional | linker libraries if have any
+-o| Mandatory | Specify path of output folder where we will store results.
+-probs  | Optional | Specify confidence threshold which the value here in range(0, 1), default=0.6
+-flags | Optional | ff for faceDetectionModel, fl for landmarkRegressionModel, fh for headPoseEstimationModel, fg for gazeEstimationMode
 -d | Optional | Provide the target device: CPU / GPU / MYRIAD / FPGA
 
 ###### Directory Structure
