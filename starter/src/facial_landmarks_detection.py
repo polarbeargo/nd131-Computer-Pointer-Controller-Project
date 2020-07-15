@@ -75,15 +75,16 @@ class Model_Landmark:
         right_eye_x,right_eye_y = outputs[2][0]*w,outputs[3][0]*h
         
         print("hello")
-        l_xmin=left_eye_x-20
-        l_ymin=left_eye_y-20
-        l_xmax=left_eye_x+20
-        l_ymax=left_eye_y+20
-        r_xmin=right_eye_x-20
-        r_ymin=right_eye_y-20
-        r_xmax=right_eye_x+20
-        r_ymax=right_eye_y+20
+        l_xmin=int(left_eye_x)-20
+        l_ymin=int(left_eye_y)-20
+        l_xmax=int(left_eye_x)+20
+        l_ymax=int(left_eye_y)+20
+        r_xmin=int(right_eye_x)-20
+        r_ymin=int(right_eye_y)-20
+        r_xmax=int(right_eye_x)+20
+        r_ymax=int(right_eye_y)+20
         print('cv')
+        print(l_xmax)
         left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
         right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
         eye_coords = [[int(l_xmin),int(l_ymin),int(l_xmax),int(l_ymax)], [int(r_xmin),int(r_ymin),int(r_xmax),int(r_ymax)]]
@@ -108,7 +109,7 @@ class Model_Landmark:
         # left_eye_image = image[left_eye_x_min:left_eye_x_max, left_eye_y_min:left_eye_y_max]
         # right_eye_image = image[right_eye_x_min:right_eye_x_max, right_eye_y_min:right_eye_y_max]
         print(left_eye)
-        return left_eye_image, right_eye_image, eye_coord
+        return left_eye, right_eye, eye_coords
 
     def preprocess_input(self, image):
         '''
