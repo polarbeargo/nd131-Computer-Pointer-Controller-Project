@@ -65,16 +65,12 @@ class Model_Landmark:
         print("All layers are supported")
 
     def draw(self, outputs, image):
-        const = 10
         eye_coords = []
         h=image.shape[0]
         w=image.shape[1]
         outputs=outputs[0]
-        print(outputs)
         left_eye_x,left_eye_y = outputs[0][0]*w,outputs[1][0]*h
         right_eye_x,right_eye_y = outputs[2][0]*w,outputs[3][0]*h
-        
-        print("hello")
         l_xmin=int(left_eye_x)-20
         l_ymin=int(left_eye_y)-20
         l_xmax=int(left_eye_x)+20
@@ -83,32 +79,9 @@ class Model_Landmark:
         r_ymin=int(right_eye_y)-20
         r_xmax=int(right_eye_x)+20
         r_ymax=int(right_eye_y)+20
-        print('cv')
-        print(l_xmax)
         left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
         right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
         eye_coords = [[int(l_xmin),int(l_ymin),int(l_xmax),int(l_ymax)], [int(r_xmin),int(r_ymin),int(r_xmax),int(r_ymax)]]
-        # outputs = outputs[self.output_name][0]
-        # print(outputs)
-        # left_eye_x_coordinate = int(outputs[0] * image.shape[1])
-        # left_eye_y_coordinate = int(outputs[1] * image.shape[0])
-        # right_eye_x_coordinate = int(outputs[2] * image.shape[1])
-        # right_eye_y_coordinate = int(outputs[3] * image.shape[0])
-        # print('CV')
-        # left_eye_x_min = left_eye_x_coordinate - 10
-        # left_eye_x_max = left_eye_x_coordinate + 10
-        # left_eye_y_min = left_eye_y_coordinate - 10
-        # left_eye_y_max = left_eye_y_coordinate + 10
-        # right_eye_x_min = right_eye_x_coordinate - 10
-        # right_eye_x_max = right_eye_x_coordinate + 10
-        # right_eye_y_min = right_eye_y_coordinate - 10
-        # right_eye_y_max = right_eye_y_coordinate + 10
-        # #print('CV')
-        # self.eye_coord = [[left_eye_x_min, left_eye_y_min, left_eye_x_max, left_eye_y_max],
-        #                   [right_eye_x_min, right_eye_y_min, right_eye_x_max, right_eye_y_max]]
-        # left_eye_image = image[left_eye_x_min:left_eye_x_max, left_eye_y_min:left_eye_y_max]
-        # right_eye_image = image[right_eye_x_min:right_eye_x_max, right_eye_y_min:right_eye_y_max]
-        print(left_eye)
         return left_eye, right_eye, eye_coords
 
     def preprocess_input(self, image):
