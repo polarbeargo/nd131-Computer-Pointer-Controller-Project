@@ -44,7 +44,6 @@ class Model_Gaze:
         '''
         processed_right_eye = self.preprocess_input(right_eye)
         processed_left_eye = self.preprocess_input(left_eye)
-        print("Hi")
         self.exec_network.start_async(request_id=0,
                                       inputs={'right_eye_image': processed_right_eye,
                                           'left_eye_image': processed_left_eye,
@@ -70,10 +69,10 @@ class Model_Gaze:
         '''
         try:
             image = image.astype(np.float32)
-            n,c,h,w = self.input_shape
-            image = cv2.resize(image, (w,h))
+            n,c = self.input_shape
+            image = cv2.resize(image, (60,60))
             image = image.transpose((2,0,1))
-            image = image.reshape(n,c,h,w)
+            image = image.reshape(n,c,60,60)
         except Exception as e:
             print("Error While preprocessing Image in " + str(e))
         return image
