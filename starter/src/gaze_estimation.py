@@ -68,11 +68,14 @@ class Model_Gaze:
         Before feeding the data into the model for inference,
         you might have to preprocess it. This function is where you can do that.
         '''
-        image = image.astype(np.float32)
-        n,c,h,w = self.input_shape
-        image = cv2.resize(image, (w,h))
-        image = image.transpose((2,0,1))
-        image = image.reshape(n,c,h,w)
+        try:
+            image = image.astype(np.float32)
+            n,c,h,w = self.input_shape
+            image = cv2.resize(image, (w,h))
+            image = image.transpose((2,0,1))
+            image = image.reshape(n,c,h,w)
+        except Exception as e:
+            print("Error While preprocessing Image in " + str(e))
         return image
 
 
