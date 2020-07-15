@@ -86,19 +86,19 @@ Argument|Type|Description
 - <b>requirements.txt</b> All the dependencies of the project listed here
 - <b>run.sh</b> one shot execution script that covers all the prerequisites of the project.
 
-## Benchmarks
-*TODO:* Include the benchmark results of running your model on multiple hardwares and multiple model precisions. Your benchmarks can include: model loading time, input/output processing time, model inference time etc.
+## Benchmarks Results
 
-## Results
-Benchmark results on Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz:
+Benchmark results on Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz Using OpenVINO DL Workbench the Benchmark performance were run on different quantization model(all models except Face Detection were available in three precisions: FP32, FP16, INT8):
 
-* face-detection-adas-binary-0001  
+* face-detection-adas-binary-0001:  
+Face detection model is the bottleneck in this pipeline, 10 ms per frame means almost 93 FPS processing rate for video stream, which are acceptable in many use cases.
    
 Precision: INT8, FP16, FP32  
 
 ![][image1]   
 
-* gaze-estimation-adas-0002 
+* gaze-estimation-adas-0002:  
+In gaze estimation, we can see low performance in Precision FP32 with the higher latency and lower throughput compare to other models. The best precision model should be INT8 with lower latency and higher throughput in the gaze estimation usecase.    
 
 Precision: INT8  
 ![][image2]  
@@ -106,7 +106,8 @@ Precision: FP16
 ![][image4]  
 Precision: FP32    
 ![][image3]  
-* head-pose-estimation-adas-0001
+* head-pose-estimation-adas-0001:  
+In head pose estimation, we can see low performance in Precision FP16 with the higher latency and lower throughput compare to other models. The best precision model should be INT8 with lower latency and higher throughput in the head pose estimation usecase.  
 
 Precision: INT8  
 ![][image5]  
@@ -114,7 +115,9 @@ Precision: FP16
 ![][image6]  
 Precision: FP32  
 ![][image7]  
-* landmarks-regression-retail-0009 
+* landmarks-regression-retail-0009:  
+
+In landmarks regression, we can see low performance in Precision FP32 with the higher latency and lower throughput compare to other models. The best precision model should be INT8 with lower latency and higher throughput in the andmarks regression usecase.  
 
 Precision: INT8  
 ![][image8]  
@@ -123,4 +126,11 @@ Precision: FP16
 Precision: FP32  
 ![][image10]  
 ## Stand Out Suggestions
-This is where you can provide information about the stand out suggestions that you have attempted.
+
+* Async Inference:  
+
+Using the start_async method will use the all cores of CPU improve performance by using threading compare to infer method. With next line wait(-1) which will behaves like sync or infer method.
+
+* Line Profiler:  
+
+By use [Line Profiler](https://video.udacity-data.com/topher/2020/March/5e7b6c2c_profiling/profiling.py) analysis code to find out which line takes how much time to execute to optimze the code.
