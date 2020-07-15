@@ -24,8 +24,7 @@ class Model_Landmark:
             self.network = IENetwork(model_name, model_bin)
         except Exception as e:
             print("Cannot initialize the network. Please enter correct model path. Error : %s", e)
-        # self.network = self.core.read_network(model=str(model_name),
-        #                                       weights=str(os.path.splitext(model_name)[0] + ".bin"))
+            
         self.core = IECore()
         self.input_name = next(iter(self.network.inputs))
         self.output_name = next(iter(self.network.outputs))
@@ -98,14 +97,3 @@ class Model_Landmark:
         except Exception as e:
             print("Error While preprocessing Image in " + str(e))
         return image
-        
-    def preprocess_output(self, outputs):
-        '''
-        Before feeding the output of this model to the next model,
-        you might have to preprocess the output. This function is where you can do that.
-        '''
-        left_eye_x = outputs[0][0].tolist()[0][0]
-        left_eye_y = outputs[0][1].tolist()[0][0]
-        right_eye_x = outputs[0][2].tolist()[0][0]
-        rght_eye_y = outputs[0][3].tolist()[0][0]
-        return (left_eye_x, left_eye_y, right_eye_x, rght_eye_y)
