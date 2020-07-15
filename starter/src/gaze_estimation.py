@@ -7,6 +7,7 @@ import os
 import cv2
 import time
 import math
+import numpy as np
 from openvino.inference_engine import IENetwork, IECore
 
 class Model_Gaze:
@@ -25,6 +26,7 @@ class Model_Gaze:
 
         self.input = next(iter(self.network.inputs))
         self.output = next(iter(self.network.outputs))
+        self.input_shape = self.network.inputs[self.input].shape
 
     def load_model(self):
         '''
@@ -42,7 +44,7 @@ class Model_Gaze:
         '''
         processed_right_eye = self.preprocess_input(right_eye)
         processed_left_eye = self.preprocess_input(left_eye)
-        
+        print("Hi")
         self.exec_network.start_async(request_id=0,
                                       inputs={'right_eye_image': processed_right_eye,
                                           'left_eye_image': processed_left_eye,
@@ -66,11 +68,13 @@ class Model_Gaze:
         Before feeding the data into the model for inference,
         you might have to preprocess it. This function is where you can do that.
         '''
-        net_input_shape = self.network.inputs[self.input].shape
-        p_frame = cv2.resize(image, (net_input_shape[3], net_input_shape[2]))
-        p_frame = p_frame.transpose(2, 0, 1)
-        p_frame = p_frame.reshape(1, *p_frame.shape)
-        return p_frame
+        image = image.astype(np.float32)
+        n,c,h,w = self.input_shape
+        image = cv2.resize(image, (w,h))
+        image = image.transpose((2,0,1))
+        image = image.reshape(n,c,h,w)
+        return image
+
 
     def preprocess_output(self, outputs, head_position):
         '''
