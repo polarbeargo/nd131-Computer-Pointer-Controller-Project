@@ -52,7 +52,6 @@ class Model_Landmark:
         self.exec_network.start_async(request_id=0,inputs={self.input_name: processed_image})
         if self.exec_network.requests[0].wait(-1) == 0:
             outputs = self.exec_network.requests[0].outputs[self.output_name]
-            outputs= outputs[0]
             left_eye, right_eye, eye_coords = self.draw(outputs, image)
             
         return left_eye, right_eye, eye_coords
@@ -67,30 +66,27 @@ class Model_Landmark:
 
     def draw(self, outputs, image):
         const = 10
+        eye_coords = []
         h=image.shape[0]
         w=image.shape[1]
-        outputs = outputs[0]
-        outputs = outputs* np.array([w, h, w, h])
-        outputs = outputs.astype(np.int32)
+        outputs=outputs[0]
         print(outputs)
-        left_eye_x = int(outputs[0] * w)
-        left_eye_y = int(outputs[1] * h)
-        right_eye_x = int(outputs[2] * w)
-        right_eye_y = int(outputs[3] * h)
+        left_eye_x,left_eye_y = outputs[0][0]*w,outputs[1][0]*h
+        right_eye_x,right_eye_y = outputs[2][0]*w,outputs[3][0]*h
+        
         print("hello")
-        l_xmin=left_eye_x-const
-        l_ymin=left_eye_y-const
-        l_xmax=left_eye_x+const
-        l_ymax=left_eye_y+const
-        r_xmin=right_eye_x-const
-        r_ymin=right_eye_y-const
-        r_xmax=right_eye_x+const
-        r_ymax=right_eye_y+const
+        l_xmin=left_eye_x-20
+        l_ymin=left_eye_y-20
+        l_xmax=left_eye_x+20
+        l_ymax=left_eye_y+20
+        r_xmin=right_eye_x-20
+        r_ymin=right_eye_y-20
+        r_xmax=right_eye_x+20
+        r_ymax=right_eye_y+20
         print('cv')
-        print(l_xmin)
         left_eye =  image[l_ymin:l_ymax, l_xmin:l_xmax]
         right_eye = image[r_ymin:r_ymax, r_xmin:r_xmax]
-        eye_coords = [[l_xmin,l_ymin,l_xmax,l_ymax], [r_xmin,r_ymin,r_xmax,r_ymax]]
+        eye_coords = [[int(l_xmin),int(l_ymin),int(l_xmax),int(l_ymax)], [int(r_xmin),int(r_ymin),int(r_xmax),int(r_ymax)]]
         # outputs = outputs[self.output_name][0]
         # print(outputs)
         # left_eye_x_coordinate = int(outputs[0] * image.shape[1])
@@ -111,7 +107,8 @@ class Model_Landmark:
         #                   [right_eye_x_min, right_eye_y_min, right_eye_x_max, right_eye_y_max]]
         # left_eye_image = image[left_eye_x_min:left_eye_x_max, left_eye_y_min:left_eye_y_max]
         # right_eye_image = image[right_eye_x_min:right_eye_x_max, right_eye_y_min:right_eye_y_max]
-        return left_eye_image, right_eye_image, self.eye_coord
+        print(left_eye)
+        return left_eye_image, right_eye_image, eye_coord
 
     def preprocess_input(self, image):
         '''
