@@ -37,11 +37,8 @@ which includes the following:
          ./run.sh
 
 
-## Demo
-
-We have provided three ways to run the application
-1. Static Image JPEG/PNG
-2. Video File
+## Demo  
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/fI1cEzbF5Co/0.jpg)](https://youtu.be/fI1cEzbF5Co)
 
 Execute following command from the root directory of the project with your configuration.
     
