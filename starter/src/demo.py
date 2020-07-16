@@ -136,13 +136,10 @@ def main():
                 if key == 27:
                     break
                 continue
-            print('pass fd')
+
             left_eye, right_eye, eye_cords = landmark_model.predict(cropped_image)
-            print('ld')
             pose_output = head_pose_model.predict(cropped_image)
-            print('hp')
             mouse_cord, gaze_vector = gaze_model.predict(left_eye, right_eye, pose_output)
-            print('ga')
         except Exception as e:
             print("Could predict using model" + str(e) + " for frame " + str(frame_count))
             continue
@@ -154,8 +151,7 @@ def main():
             if 'ff' in preview_flags:
                 if len(preview_flags) != 1:
                     preview_frame = cropped_image
-                cv2.rectangle(frame, (face_cords[0], face_cords[1]), (face_cords[2], face_cords[3]),
-                      (255, 0, 0), 3)
+                    cv2.rectangle(frame, (face_cords[0], face_cords[1]), (face_cords[2], face_cords[3]), (255, 0, 0), 3)
 
             if 'fl' in preview_flags:
                 cv2.rectangle(cropped_image, (eye_cords[0][0]-const, eye_cords[0][1]-const), (eye_cords[0][2]+const, eye_cords[0][3]+const),
@@ -180,11 +176,6 @@ def main():
                 cv2.arrowedLine(re, (x - w, y + w), (x + w, y - w), (255, 0, 255), 2)
                 preview_frame[eye_cords[0][1]:eye_cords[0][3], eye_cords[0][0]:eye_cords[0][2]] = le
                 preview_frame[eye_cords[1][1]:eye_cords[1][3], eye_cords[1][0]:eye_cords[1][2]] = re
-                cv2.putText(frame, "gaze angles: x= {:.2f} , y= {:.2f} , z= {:.2f}".format(
-                gaze_vector[0], gaze_vector[1], gaze_vector[2]),
-                (20, 80),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.35, (255, 255, 255), 1)
             image = np.hstack((cv2.resize(frame, (w, h)), cv2.resize(preview_frame, (w, h))))
 
         cv2.imshow('preview', image)
