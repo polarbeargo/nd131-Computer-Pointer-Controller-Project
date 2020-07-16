@@ -140,7 +140,9 @@ def main():
             left_eye, right_eye, eye_cords = landmark_model.predict(cropped_image)
             print('ld')
             pose_output = head_pose_model.predict(cropped_image)
+            print('hp')
             mouse_cord, gaze_vector = gaze_model.predict(left_eye, right_eye, pose_output)
+            print('ga')
         except Exception as e:
             print("Could predict using model" + str(e) + " for frame " + str(frame_count))
             continue
@@ -152,7 +154,7 @@ def main():
             if 'ff' in preview_flags:
                 if len(preview_flags) != 1:
                     preview_frame = cropped_image
-                cv2.rectangle(frame, (face_cords[0][0], face_cords[0][1]), (face_cords[0][2], face_cords[0][3]),
+                cv2.rectangle(frame, (face_cords[0], face_cords[1]), (face_cords[2], face_cords[3]),
                       (255, 0, 0), 3)
 
             if 'fl' in preview_flags:
