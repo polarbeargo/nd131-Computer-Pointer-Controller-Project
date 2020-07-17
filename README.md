@@ -19,7 +19,6 @@ which includes the following:
 
 - openvino inference API
 - OpenVino WorkBench
-- VTune Profiler
 
 ## Project Set Up and Installation
 
@@ -128,6 +127,3 @@ Precision: FP32
 
 Using the start_async method will use the all cores of CPU improve performance by using threading compare to infer method. With next line wait(-1) which will behaves like sync or infer method.
 
-* Line Profiler:  
-
-By use [Line Profiler](https://video.udacity-data.com/topher/2020/March/5e7b6c2c_profiling/profiling.py) analysis code to find out which line takes how much time to execute to optimze the code.
