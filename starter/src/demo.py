@@ -141,7 +141,7 @@ def main():
             pose_output = head_pose_model.predict(cropped_image)
             mouse_cord, gaze_vector = gaze_model.predict(left_eye, right_eye, pose_output)
         except Exception as e:
-            print("Could predict using model" + str(e) + " for frame " + str(frame_count))
+            print(str(e) + " for frame " + str(frame_count))
             continue
 
         image = cv2.resize(frame, (w, h))
@@ -176,7 +176,7 @@ def main():
                 cv2.arrowedLine(re, (x - w, y + w), (x + w, y - w), (255, 0, 255), 2)
                 preview_frame[eye_cords[0][1]:eye_cords[0][3], eye_cords[0][0]:eye_cords[0][2]] = le
                 preview_frame[eye_cords[1][1]:eye_cords[1][3], eye_cords[1][0]:eye_cords[1][2]] = re
-            image = np.hstack((cv2.resize(frame, (w, h)), cv2.resize(preview_frame, (w, h))))
+            image = np.hstack((cv2.resize(frame, (500, 500)), cv2.resize(preview_frame, (500, 500))))
 
         cv2.imshow('preview', image)
         out_video.write(frame)
