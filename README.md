@@ -37,7 +37,7 @@ which includes the following:
 
 
 ## Demo  
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/fI1cEzbF5Co/0.jpg)](https://youtu.be/fI1cEzbF5Co)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/NkXa3oqZm2Y/0.jpg)](https://youtu.be/NkXa3oqZm2Y)
 
 Execute following command from the root directory of the project with your configuration.
     
