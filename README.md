@@ -18,7 +18,7 @@ The project's main aim is to check usage of OpenVino ToolKit on different hardwa
 which includes the following:
 
 - openvino inference API
-- OpenVino WorkBench
+- OpenVino DL WorkBench
 
 ## Project Set Up and Installation
 
