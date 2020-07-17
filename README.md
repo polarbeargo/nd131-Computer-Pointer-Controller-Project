@@ -126,7 +126,7 @@ Precision: FP32
 
 * Async Inference:  
 
-   * Using the start_async method will use the all cores of CPU improve performance by using threading the ability to perform multiple inference at the same time compare to infer method. In synchrounous inference, the inference request need to be waiting until the other inference request executed therefore, it is more suitable to use async inference in this project.  
+   * Using the start_async method will use the all cores of CPU improve performance with threading the ability to perform multiple inference at the same time compare to infer method. In synchrounous inference, the inference request need to be waiting until the other inference request executed therefore, it is more suitable to use async inference in this project.  
 
 * Edge case:  
 In this project demonstrate the ability to use human gaze to control computer mouse but there are some limitations:  
