@@ -126,14 +126,12 @@ Precision: FP32
 
 * Async Inference:  
 
-Using the start_async method will use the all cores of CPU improve performance by using threading the ability to perform multiple inference at the same time compare to infer method. In synchrounous inference, the inference request need to be waiting until the other inference request executed therefore, it is more suitable to use async inference in this project.  
+   * Using the start_async method will use the all cores of CPU improve performance by using threading the ability to perform multiple inference at the same time compare to infer method. In synchrounous inference, the inference request need to be waiting until the other inference request executed therefore, it is more suitable to use async inference in this project.  
 
 * Edge case:  
-
-In this project demonstrate the ability to use human gaze to control computer mouse but there are some limitations:
-
-   * This project only work better when only one person has been detected. In the real condition, if use webcam, we should deal with other detected person. To deal with condision, we suggest to detect the main person only by combine Spreaker or Speech recognition to find main person who perform the computer pointer control role.
-   * Some situations where inference may break such as when Facial Landmark detection model returns empty image or the mouse move to the corner of the frame.  
+In this project demonstrate the ability to use human gaze to control computer mouse but there are some limitations:  
+   * This project only work better when only one person has been detected in the frame. In the real condition, if use webcam, we should deal with detected multiple person. To deal with condision, we suggest to detect the main person only by combine Spreaker or Speech recognition to find main person who perform the computer pointer control role.
+   * Some situations inference may break such as when Facial Landmark detection model returns empty image or the mouse move to the corner of the frame.  
    
 
 * Use VTune Amplifier to measure hot spots in your application code.
