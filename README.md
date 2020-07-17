@@ -136,3 +136,4 @@ In this project demonstrate the ability to use human gaze to control computer mo
    * Some situations where inference may break such as when Facial Landmark detection model returns empty image or the mouse move to the corner of the frame.  
    
 
+* Use VTune Amplifier to measure hot spots in your application code.
