@@ -1,4 +1,5 @@
 image==1.5.27
+imutils
 ipdb==0.12.3
 ipython==7.10.2
 numpy==1.17.4
